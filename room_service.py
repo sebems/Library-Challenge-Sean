@@ -2,30 +2,50 @@ from typing import List
 import sqlite3
 from student import Student
 from room import Room
+import random
 
-from room_db_handler import ROOM_DB_Handler
+from db_handler import DB_Handler
+
+ROOMS = 10      # the number of rooms in the apartment
+
+roomDB = DB_Handler('room', 'rooms')
+roomDB.createTable({
+                'roomID': 'integer', 
+                'numOccupants': 'integer', 
+                'maxOccupants': 'integer',
+                'isFull': 'integer'
+            })
 
 class RoomService:
 
     def __init__(self) -> None:
-        self.dbHandler = ROOM_DB_Handler()
+        pass
 
     # make a get all in DB_Handler 
     def find_all(self) -> List[dict]:
-        return self.dbHandler.findAllEmptyRooms()
+        roomDB.cursor.execute(" SELECT * FROM rooms WHERE numOccupants < maxOccupants ")
+        return roomDB.cursor.fetchall()
 
     def reserve_room(self, room_id: str):
         """
             reserve room, by passing in room_id and student name
         """
 
-        currRoom = self.dbHandler.getCurrentRoom(room_id)
+        # check if the room is available
+
+        # TODO: make a function to map to SQL statements
+        # e.g UPDATE_ROOMS(column name: str); then change the specified
+        roomDB.cursor.execute(""" SELECT * FROM rooms WHERE roomID = ? """, (room_id,))
+        currRoom = Room(roomDB.cursor.fetchall()[0])
+
+        # TODO: create an object to handle future operation
+        isTableEmpty = currRoom.isFull()
 
         # if room is full (value of 1) then throw an err
         # TODO: add an error throw statement
-        isRoomEmpty = currRoom.isFull()
 
-        if isRoomEmpty:
+        # isFull = 
+        if currRoom.isFull():
             print("Room Full!")
             exit(-1)
 
@@ -34,22 +54,46 @@ class RoomService:
 
         # updates table if the room is full
         if curr_room_occupants == curr_room_max:
-            self.dbHandler.updateTable("isFull", 1, "roomID", room_id)
-            print("Room Full! Pick Another")
+            roomDB.cursor.execute(""" UPDATE rooms 
+                SET isFull = ? 
+                WHERE roomID = ?
+                """, (1, room_id))
+            roomDB.conn.commit()
         else:
             # update table
             new_curr_room_occupants = currRoom.getNumOccupants() + 1  # increment the num of people in current room
-            self.dbHandler.updateTable("numOccupants", new_curr_room_occupants, "roomID", room_id)
+            roomDB.cursor.execute(""" UPDATE rooms 
+                            SET numOccupants = ? 
+                            WHERE roomID = ?
+                            """, (new_curr_room_occupants, room_id))
+            roomDB.conn.commit()   
 
             return room_id  # gives the reserver the room_id for future reference
 
+    def toRoomObject(self, sql_result: List[tuple]) -> List[Room]:
+        roomList = []
+        for sql_tuple in sql_result:
+            roomList.append(Room(sql_tuple))
+
+        return roomList
+
+    def insertRoom(self):
+        roomDB.cursor.execute(" SELECT * FROM rooms ")
+        table_size = len(roomDB.cursor.fetchall())
+
+        roomType = int(random.randrange(1, 6))
+        roomDB.cursor.execute("INSERT INTO rooms VALUES (?, ?, ?, ?)", (table_size + 1, 0, roomType, 0))
+        roomDB.conn.commit()
 
 if __name__ == "__main__":
     room_service = RoomService()
-    roomHandler = room_service.dbHandler.roomDB
+    # print(room_service.find_all())
 
-    room_service.dbHandler.insertRoomRepeat(1)
+    # stu = Student("Jon", "Doe")
+    room_service.insertRoom()
+    room_service.insertRoom()
+    room_service.insertRoom()
 
     room_service.reserve_room(1)
     
-    roomHandler.closeDB()
+    roomDB.conn.close()
