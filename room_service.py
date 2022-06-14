@@ -40,7 +40,7 @@ class RoomService:
         else:
             # update table
             new_curr_room_occupants = currRoom.getNumOccupants() + 1  # increment the num of people in current room
-            self.dbHandler.updateTable("numOccupants", new_curr_room_occupants, "roomID", room_id)
+            self.dbHandler.updateTable(new_curr_room_occupants, room_id)
 
             return room_id  # gives the reserver the room_id for future reference
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     room_service = RoomService()
     roomHandler = room_service.dbHandler.roomDB
 
-    room_service.dbHandler.insertRoomRepeat(1)
+    room_service.dbHandler.insertRoom(3)
 
     room_service.reserve_room(1)
     

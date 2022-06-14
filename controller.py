@@ -7,6 +7,8 @@ import typing
 app = Flask(__name__)
 CORS(app)
 
+curr_student_name = "joe"
+
 @app.route("/")
 def test():
   return "Welcome to Hekman!"
@@ -22,7 +24,8 @@ def reserve_room(room_id: str):
   room_service = RoomService()
 
   # this doesn't stop users from reserving the room multiple times
-  rsvp_room = room_service.reserve_room(room_id)  
+  reserved_room = room_service.reserve_room(room_id)
+  return reserved_room
 
 def rooms():
   room_service = RoomService()
@@ -33,8 +36,9 @@ def books():
   print(book_service.find_all())
 
 def checkout_book(book_id: str):
-  # TODO: missing implementation
-  pass
+  book_service = BookService()
+  checked_out_room = book_service.checkout_book(book_id, curr_student_name)
+  return checked_out_room
 
 if __name__ == "__main__":
     app.run()

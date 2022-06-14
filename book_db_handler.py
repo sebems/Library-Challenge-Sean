@@ -12,36 +12,54 @@ class BOOK_DB_Handler( DB_Handler ):
     def createTable(self):
 
         self.bookDB.createTable({
-            'book_id': 'integer',
-            'owner': 'text'
+            'bookID': 'integer',
+            'renter': 'text'
         })
 
-    def findAllUnRentedBooks(self):
+    def updateTable(self, newValue, searchVal):
+        """
+            Updates the a given table entry
+        """
+
+        self.bookDB.cursor.execute(""" UPDATE books 
+            SET  renter= ? 
+            WHERE bookID= ?
+            """, (newValue, searchVal))
+        
+        self.bookDB.conn.commit()
+
+    def findAllUnRentedBooks(self) -> List:
         """
             Finds all books not checked out and returns sql result
         """
-        self.bookDB.cursor.execute(" SELECT * FROM books WHERE owner = ''")
+        self.bookDB.cursor.execute(" SELECT * FROM books WHERE renter = ''")
         return self.bookDB.cursor.fetchall()
 
-    def getCurrentBook(self, book_id):
+    def getCurrentBook(self, book_id) -> Book:
+        """
+            Gets the Current Book Object
+        """
         self.bookDB.cursor.execute(""" SELECT * FROM books WHERE bookID = ? """, (book_id,))
         return Book(self.bookDB.cursor.fetchall()[0])
 
-    def insertBook(self):
-        self.bookDB.cursor.execute(" SELECT * FROM books ")
-        table_size = len(self.bookDB.cursor.fetchall())
+    def insertBook(self, numOfInputs):
+        """
+            Inserts n number of entries into table
+        """
 
-        self.bookDB.cursor.execute("INSERT INTO books VALUES (?, ?)", (table_size + 1, ''))
+        for i in range(numOfInputs):
+            self.bookDB.cursor.execute(" SELECT * FROM books ")
+            table_size = len(self.bookDB.cursor.fetchall())
+            self.bookDB.cursor.execute("INSERT INTO books VALUES (?, ?)", (table_size + 1, ''))
 
         self.bookDB.conn.commit()
 
-    def insertBookRepeat(self, numOfInputs):
-        for i in range(numOfInputs):
-            self.insertBook()
-
     def toBookObject(self, sql_result: List[tuple]) -> List[Book]:
-        roomList = []
+        """
+            Converts a List of tuples to a list of books
+        """
+        bookList = []
         for sql_tuple in sql_result:
-            roomList.append(Book(sql_tuple))
+            bookList.append(Book(sql_tuple))
 
-        return roomList
+        return bookList

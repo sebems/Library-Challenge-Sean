@@ -17,6 +17,17 @@ class ROOM_DB_Handler( DB_Handler ):
                 'isFull': 'integer'
             })
 
+    def updateTable(self, searchVal, newValue):
+        """
+            Updates the a given table entry
+        """
+        self.roomDB.cursor.execute(""" UPDATE rooms 
+            SET  numOccupants= ? 
+            WHERE roomID= ?
+            """, (newValue, searchVal))
+        
+        self.roomDB.conn.commit()
+
     def findAllEmptyRooms(self):
         """
             Finds all empty rooms and returns the result
@@ -25,22 +36,32 @@ class ROOM_DB_Handler( DB_Handler ):
         return self.roomDB.cursor.fetchall()
 
     def getCurrentRoom(self, room_id):
+        """
+            Gets the Current Room Object
+        """
         self.roomDB.cursor.execute(""" SELECT * FROM rooms WHERE roomID = ? """, (room_id,))
         return Room(self.roomDB.cursor.fetchall()[0])
 
-    def insertRoom(self):
-        self.roomDB.cursor.execute(" SELECT * FROM rooms ")
-        table_size = len(self.roomDB.cursor.fetchall())
+    def insertRoom(self, numOfInputs = 1):
+        """
+            Inserts n number of entries into table
+        """
 
-        roomType = int(random.randrange(1, 6))
-        self.roomDB.cursor.execute("INSERT INTO rooms VALUES (?, ?, ?, ?)", (table_size + 1, 0, roomType, 0))
+        for i in range(numOfInputs):
+            self.roomDB.cursor.execute(" SELECT * FROM rooms ")
+            table_size = len(self.roomDB.cursor.fetchall())
+            roomType = int(random.randrange(1, 6))
+
+            self.roomDB.cursor.execute("INSERT INTO rooms VALUES (?, ?, ?, ?)", (table_size + 1, 0, roomType, 0))
+        
         self.roomDB.conn.commit()
 
-    def insertRoomRepeat(self, numOfInputs):
-        for i in range(numOfInputs):
-            self.insertRoom()
-
+    #
     def toRoomObject(self, sql_result: List[tuple]) -> List[Room]:
+        """
+            Converts a List of tuples to a list of rooms
+        """
+
         roomList = []
         for sql_tuple in sql_result:
             roomList.append(Room(sql_tuple))

@@ -6,6 +6,7 @@ class SessionService:
 
     def log_in(name: str) -> bool:
         # TODO: implementation required
+        # add a student db to check students
         pass
 
     def log_out(name: str) -> bool:
