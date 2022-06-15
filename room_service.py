@@ -23,9 +23,9 @@ class RoomService:
 
         # if room is full (value of 1) then throw an err
         # TODO: add an error throw statement
-        isRoomEmpty = currRoom.isFull()
+        isRoomFull = currRoom.isFull()
 
-        if isRoomEmpty:
+        if isRoomFull:
             print("Room Full!")
             exit(-1)
 
@@ -33,13 +33,14 @@ class RoomService:
         curr_room_max = currRoom.getOccupantMax()    # current room occupant limit
 
         # updates table if the room is full
+        # TODO: remove check since it's done prior to this. Change the isFull statement in room.py
         if curr_room_occupants == curr_room_max:
             self.dbHandler.updateTable("isFull", 1, "roomID", room_id)
             print("Room Full! Pick Another")
         else:
             # update table
             new_curr_room_occupants = currRoom.getNumOccupants() + 1  # increment the num of people in current room
-            self.dbHandler.updateTable("numOccupants", new_curr_room_occupants, "roomID", room_id)
+            self.dbHandler.updateTable(new_curr_room_occupants, room_id)
 
             return room_id  # gives the reserver the room_id for future reference
 
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     room_service = RoomService()
     roomHandler = room_service.dbHandler.roomDB
 
-    room_service.dbHandler.insertRoomRepeat(1)
+    room_service.dbHandler.insertRoom(3)
 
     room_service.reserve_room(1)
     

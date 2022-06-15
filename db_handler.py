@@ -28,15 +28,7 @@ class DB_Handler:
         self.cursor.execute(" CREATE TABLE IF NOT EXISTS " + self.tableName + " ( " + colsAndTypes + ")")
 
     def updateTable(self, searchCol, searchVal, updatedCol, newValue):
-        """
-            Updates the a given table entry
-        """
-        self.cursor.execute(""" UPDATE rooms 
-            SET ? = ? 
-            WHERE ? = ?
-            """, (updatedCol, newValue, searchCol, searchVal))
-        
-        self.conn.commit()
+        pass
 
     def showTable(self):
         """

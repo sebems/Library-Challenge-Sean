@@ -1,13 +1,13 @@
 Room Service & Book Service
 
-    remove all SQL code and put it into Service
+    remove all SQL code and put it into Service (DONE)
 
-    THE SERVICE should not know how the operations work but just DO.
+    THE SERVICE should not know how the operations work but just DO. 
 
     put the SQL code in the db_handler
 
 - Tidy up the Room Service:
-    error handling and removal of redundant code
+    error handling and removal of redundant code    (DONE)
 
 - Copy over code to book service (similar concept)
 
