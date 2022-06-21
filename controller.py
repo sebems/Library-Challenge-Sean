@@ -2,23 +2,25 @@ from flask import Flask, json, jsonify
 from flask_cors import CORS
 from room_service import RoomService
 from book_service import BookService
+from session_service import SessionService
 import typing
 
 app = Flask(__name__)
 CORS(app)
 
-curr_student_name = "joe"
+curr_student_name = ""
 
 @app.route("/")
 def test():
   return "Welcome to Hekman!"
 
-def login(name: str) :
-  # TODO: missing implementation
-  pass
+def login() :
+  session_service = SessionService()
+  session_service.log_in()
 
-def logout(name: str) :
-  return "Successfully Signed Out."
+def logout() :
+  session_service = SessionService()
+  session_service.log_out()
 
 def reserve_room(room_id: str):
   room_service = RoomService()
