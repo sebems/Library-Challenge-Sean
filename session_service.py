@@ -1,4 +1,5 @@
 from student_service import Student_Service
+from student import Student
 
 class SessionService: 
 
@@ -6,13 +7,14 @@ class SessionService:
         pass
 
     def log_in(name: str) -> bool:
+        stud = Student("John", "Doe")
         student_service = Student_Service()
-        student_service.authenticate()
+        return student_service.authenticate(stud)
 
     def log_out(name: str) -> bool:
         # TODO: implementation required
-        print( "Successfully Signed Out." )
-        exit(1)
+        return( "Successfully Signed Out." )
+        # exit(1)
 
 if __name__ == "__main__":
     session_service = SessionService()

@@ -12,7 +12,7 @@ class RoomService:
 
     # make a get all in DB_Handler 
     def find_all(self) -> List[dict]:
-        return self.dbHandler.findAllEmptyRooms()
+        return self.dbHandler.findAllRooms()
 
     def reserve_room(self, room_id: str):
         """

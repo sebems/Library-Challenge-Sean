@@ -1,3 +1,4 @@
+from re import A
 from db_handler import DB_Handler
 import random
 from book import Book
@@ -28,12 +29,37 @@ class BOOK_DB_Handler( DB_Handler ):
         
         self.bookDB.conn.commit()
 
-    def findAllUnRentedBooks(self) -> List:
+    def findAllUnRentedBooks(self):
         """
             Finds all books not checked out and returns sql result
         """
         self.bookDB.cursor.execute(" SELECT * FROM books WHERE renter = ''")
-        return self.bookDB.cursor.fetchall()
+        query_res = self.bookDB.cursor.fetchall()
+
+        print(query_res)
+        # convert to dict
+        res = {}
+        #TODO: extract items from list and s
+        for sublist in query_res:
+            res[sublist[0]] = list(sublist[1:])
+
+        return res
+
+    def findAllBooks(self):
+        """
+            Finds all books
+        """
+        self.bookDB.cursor.execute(" SELECT * FROM books ")
+        query_res = self.bookDB.cursor.fetchall()
+
+        print(query_res)
+        # convert to dict
+        res = {}
+        #TODO: extract items from list and s
+        for sublist in query_res:
+            res[sublist[0]] = list(sublist[1:])
+
+        return res
 
     def getCurrentBook(self, book_id) -> Book:
         """

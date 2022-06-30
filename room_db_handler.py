@@ -33,7 +33,30 @@ class ROOM_DB_Handler( DB_Handler ):
             Finds all empty rooms and returns the result
         """
         self.roomDB.cursor.execute(" SELECT * FROM rooms WHERE numOccupants < maxOccupants ")
-        return self.roomDB.cursor.fetchall()
+        query_res = self.roomDB.cursor.fetchall()
+
+        # convert to dict
+        res = {}
+        #TODO: extract items from list and s
+        for sublist in query_res:
+            res[sublist[0]] = list(sublist[1:])
+
+        return res
+
+    def findAllRooms(self):
+        """
+            Finds all rooms and returns the result
+        """
+        self.roomDB.cursor.execute(" SELECT * FROM rooms")
+        query_res = self.roomDB.cursor.fetchall()
+
+        # convert to dict
+        res = {}
+        #TODO: extract items from list and s
+        for sublist in query_res:
+            res[sublist[0]] = list(sublist[1:])
+
+        return res
 
     def getCurrentRoom(self, room_id):
         """

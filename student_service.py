@@ -10,12 +10,14 @@ class Student_Service:
         self.printMenu(a_stud) if self.dbHandler.isStudentIn(a_stud) else print("No such Student")
 
     def printMenu(self, a_stud: Student):
-        print("Welcome Back " + a_stud.getFirstName())
-        print("-------------------------------------\n")
+        printString = """Welcome Back  + {a_stud.getFirstName()} \
+        \n-------------------------------------\n
 
-        print("""1. Reserve a Room \n
+        1. Reserve a Room \n
                  2. Rent Out a Book \n
                  3. Logout
-              """)
+              """
+        
+        return printString
 
         # TODO: get input from user

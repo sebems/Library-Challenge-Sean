@@ -8,8 +8,8 @@ class BookService:
     def __init__(self) -> None:
         self.dbHandler = BOOK_DB_Handler()
 
-    def find_all(self) -> List[dict]: 
-        return self.dbHandler.findAllUnRentedBooks()
+    def find_all(self): 
+        return self.dbHandler.findAllBooks()
 
     def checkout_book(self, book_id: str, student_name: str):
         self.dbHandler.updateTable(student_name, book_id)
